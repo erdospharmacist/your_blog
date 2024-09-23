@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p>By {{ post.author.email }} on {{ post.created_at.strftime('%Y-%m-%d') }}</p>
+<p>{{ post.content }}</p>
+
+<hr>
+
+<h2>Comments</h2>
+
+<!-- List all comments for the post -->
+{% for comment in comments %}
+    <div>
+        <p><strong>{{ comment.author.email }}</strong> on {{ comment.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p>{{ comment.content }}</p>
+    </div>
+    <hr>
+{% endfor %}
+
+<!-- Comment form, shown only to logged-in users -->
+{% if current_user.is_authenticated %}
+    <h3>Leave a Comment</h3>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.content.label }}<br>
+            {{ form.content(cols=60, rows=5) }}<br>
+            {% for error in form.content.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% else %}
+    <p>You need to <a href="{{ url_for('main.login') }}">log in</a> to comment.</p>
+{% endif %}
+{% endblock %}

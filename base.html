@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Ensure the page matches the device's size -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page Title -->
+    <title>{% block title %}Your Name Page{% endblock %}</title>
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Google Fonts (optional for better typography) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation bar -->
+    <div class="navbar">
+        <a href="{{ url_for('main.home') }}">Home</a>
+        <a href="{{ url_for('main.contact') }}">Contact/Socials</a>
+        <a href="{{ url_for('main.learning') }}">Learning/Teaching</a>
+        <a href="{{ url_for('main.blog') }}">Blog</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.logout') }}">Logout</a>
+            {% if current_user.is_admin %}
+                <a href="{{ url_for('main.create_post') }}">Create Post</a>
+                <a href="{{ url_for('main.admin_users') }}">Manage Users</a>
+            {% endif %}
+        {% else %}
+            <a href="{{ url_for('main.login') }}">Login</a>
+            <a href="{{ url_for('main.register') }}">Register</a>
+        {% endif %}
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Page content -->
+    <div class="container">
+        {% block content %}
+        <!-- Default content can go here -->
+        {% endblock %}
+    </div>
+</body>
+</html>

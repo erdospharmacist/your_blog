@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+<!-- template inheritance go brrrrrrrr -->
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<h1>Blog Posts</h1>
+
+{% if current_user.is_authenticated and current_user.is_admin %}
+    <a href="{{ url_for('main.create_post') }}">Create New Post</a>
+{% endif %}
+
+<hr>
+
+<!-- blog posts -->
+{% for post in posts %}
+    <div>
+        <h2><a href="{{ url_for('main.view_post', post_id=post.id) }}">{{ post.title }}</a></h2>
+        <p>By {{ post.author.email }} on {{ post.created_at.strftime('%Y-%m-%d') }}</p>
+        <p>{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+        <a href="{{ url_for('main.view_post', post_id=post.id) }}">Read More</a>
+    </div>
+    <hr>
+{% endfor %}
+{% endblock %}
